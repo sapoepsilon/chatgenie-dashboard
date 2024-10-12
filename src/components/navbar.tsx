@@ -14,7 +14,6 @@ export default function NavigationMenuDemo() {
   return (
     <div className={`h-16 shadow-md px-6`}>
 <div className="container h-full flex justify-between w-full max-w-full">
-{/* Navigation Menu */}
         <NavigationMenu>
           <NavigationMenuList className="flex justify-end space-x-4">
             <NavigationMenuItem>
