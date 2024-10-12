@@ -5,42 +5,11 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area'; 
 import { Phone, ChevronRight, Calendar } from 'lucide-react';
+import { Database } from '../../../database.types';
 
-// Define the type for a phone number entry
-type PhoneNumber = {
-    id: number;
-    name: string;
-    number: string;
-  };
-  
-  // Define the type for a single call entry
-  type Call = {
-    id: number;
-    date: string;  // Date as string in "YYYY-MM-DD" format
-    time: string;  // Time as string in "HH:MM" format
-    duration: string;  // Duration as string in "HH:MM:SS" format
-  };
-  
-  // Define the type for a single transcript entry
-  type Transcript = {
-    id: number;
-    text: string;
-    isAgent: boolean;  // Whether the message is from the agent or the user
-  };
-  
-  // Define the complete types for the objects
-  type PhoneNumbers = PhoneNumber[];  // Array of phone numbers
-  
-  type Calls = {
-    [key: number]: Call[];  // Object where the key is a phone number ID, and the value is an array of calls
-  };
-  
-  type Transcripts = {
-    [key: number]: {  // The outer key is the phone number ID
-      [key: number]: Transcript[];  // The inner key is the call ID, and the value is an array of transcript entries
-    };
-  };
-  
+type PhoneNumbers = Database["public"]["Tables"]["phone_numbers"]["Row"][];
+type Calls = Record<number, Database["public"]["Tables"]["calls"]["Row"][]>;
+type Transcripts = Record<number, Record<number, Database["public"]["Tables"]["transcripts"]["Row"][]>>;
   // Applying the types to your data
   const phoneNumbers: PhoneNumbers = [
     { id: 1, name: "John Doe", number: "555-1234" },
@@ -72,7 +41,8 @@ export default function Dashboard() {
   const [selectedNumber, setSelectedNumber] = useState(phoneNumbers[0].id);
   const [selectedCall, setSelectedCall] = useState(calls[phoneNumbers[0].id][0].id);
   const [sidebarOpen, setSidebarOpen] = useState(false);
-
+  const selectedCallData = calls[selectedNumber]?.find(call => call.id === selectedCall);
+  
   return (
     <div className="flex flex-col h-screen bg-background">
 
@@ -133,19 +103,22 @@ export default function Dashboard() {
           </header>
           <ScrollArea className="flex-1 p-4">
             {selectedNumber && selectedCall && transcripts[selectedNumber][selectedCall].map((message) => (
-              <div key={message.id} className={`flex mb-4 ${message.isAgent ? "justify-start" : "justify-end"}`}>
-                <div className={`max-w-[70%] p-3 rounded-lg ${message.isAgent ? "bg-muted text-muted-foreground" : "bg-primary text-primary-foreground"}`}>
+              <div key={message.id} className={`flex mb-4 ${message.is_agent ? "justify-start" : "justify-end"}`}>
+                <div className={`max-w-[70%] p-3 rounded-lg ${message.is_agent ? "bg-muted text-muted-foreground" : "bg-primary text-primary-foreground"}`}>
                   <p>{message.text}</p>
                 </div>
               </div>
             ))}
           </ScrollArea>
           <footer className="p-4 border-t bg-muted/40">
-            <div className="flex justify-between items-center text-sm text-muted-foreground">
-              <span>Call Date: {calls[selectedNumber].find(call => call.id === selectedCall)?.date}</span>
-              <span>Duration: {calls[selectedNumber].find(call => call.id === selectedCall)?.duration}</span>
-            </div>
-          </footer>
+  <div className="flex justify-between items-center text-sm text-muted-foreground">
+    <span>
+      Call Date: {selectedCallData?.date ?? "Unknown"}
+    </span>
+  </div>
+</footer>
+
+
         </div>
       </div>
     </div>
