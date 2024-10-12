@@ -5,7 +5,6 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area'; 
 import { Phone, ChevronRight, Calendar } from 'lucide-react';
-import { NavigationMenu, NavigationMenuTrigger,NavigationMenuContent, NavigationMenuItem, NavigationMenuLink } from '@radix-ui/react-navigation-menu';
 
 // Define the type for a phone number entry
 type PhoneNumber = {
