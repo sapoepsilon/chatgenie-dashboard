@@ -33,6 +33,9 @@ const DashboardClient: React.FC<DashboardClientProps> = ({ phoneNumbers, calls, 
     return (
         <div className="flex flex-1 overflow-hidden">
             <div className="w-80 border-r bg-muted/40 flex flex-col">
+              <header className="p-4 border-b bg-muted/40 flex justify-between items-center">
+                    <h2 className="text-xl font-semibold">Call History</h2>
+                </header>
                 <ScrollArea className="flex-grow">
                     {callList.map((call) => (
                         <Button

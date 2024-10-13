@@ -15,7 +15,9 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Upload, X, ChevronDown, ChevronUp } from "lucide-react";
-import { useRouter } from 'next/navigation'
+import { useRouter } from 'next/navigation';
+import { createClient } from '@/utils/supabase/client';  // Import createClient function
+
 const daysOfWeek = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 
 type DaySchedule = {
@@ -40,7 +42,8 @@ const OnboardingPage = () => {
   const [teleOperatorInstructions, setTeleOperatorInstructions] = useState('');
   const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const router = useRouter()
+  const router = useRouter();
+  const supabase = createClient();  // Create Supabase client instance
 
   const handleDayToggle = (day: string) => {
     setWeekSchedule(prev => ({
@@ -59,6 +62,30 @@ const OnboardingPage = () => {
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
       setUploadedFiles(Array.from(event.target.files));
+    }
+  };
+
+  const handleSubmit = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('businesses')
+        .insert([
+          {
+            business_name: businessName,
+            week_schedule: weekSchedule,
+            tele_operator_instructions: teleOperatorInstructions,
+            uploaded_files: uploadedFiles.map(file => file.name)  // Assuming file names are stored
+          }
+        ]);
+
+      if (error) {
+        console.error('Error inserting data:', error);
+      } else {
+        console.log('Data inserted successfully:', data);
+        router.push('/dashboard');
+      }
+    } catch (error) {
+      console.error('Unexpected error:', error);
     }
   };
 
@@ -166,7 +193,7 @@ const OnboardingPage = () => {
         </CardContent>
 
         <CardFooter className="flex justify-end">
-          <Button onClick={() => router.push('/dashboard')} type="submit">Complete Onboarding</Button>
+          <Button onClick={handleSubmit} type="submit">Complete Onboarding</Button>
         </CardFooter>
       </Card>
     </div>
