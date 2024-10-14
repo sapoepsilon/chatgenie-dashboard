@@ -23,23 +23,9 @@ export default function NavigationMenuDemo() {
               </Link>
             </NavigationMenuItem>
             <NavigationMenuItem>
-              <Link href="/settings" passHref>
-                <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                  Settings
-                </NavigationMenuLink>
-              </Link>
-            </NavigationMenuItem>
-            <NavigationMenuItem>
-              <Link href="/calls" passHref>
+              <Link href="/dashboard" passHref>
                 <NavigationMenuLink className={navigationMenuTriggerStyle()}>
                   Calls
-                </NavigationMenuLink>
-              </Link>
-            </NavigationMenuItem>
-            <NavigationMenuItem>
-              <Link href="/messages" passHref>
-                <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                  Messages
                 </NavigationMenuLink>
               </Link>
             </NavigationMenuItem>

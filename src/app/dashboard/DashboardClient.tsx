@@ -31,9 +31,10 @@ const DashboardClient: React.FC<DashboardClientProps> = ({ phoneNumbers, calls, 
     };
 
     return (
-        <div className="flex flex-1 overflow-hidden">
-            <div className="w-80 border-r bg-muted/40 flex flex-col">
-              <header className="p-4 border-b bg-muted/40 flex justify-between items-center">
+        <div className="flex flex-col md:flex-row flex-1 overflow-hidden">
+            {/* Call History Section */}
+            <div className="w-full md:w-80 border-b md:border-r bg-muted/40 flex flex-col">
+                <header className="p-4 border-b bg-muted/40 flex justify-between items-center">
                     <h2 className="text-xl font-semibold">Call History</h2>
                 </header>
                 <ScrollArea className="flex-grow">
@@ -55,6 +56,7 @@ const DashboardClient: React.FC<DashboardClientProps> = ({ phoneNumbers, calls, 
                 </ScrollArea>
             </div>
 
+            {/* Call Transcripts Section */}
             <div className="flex-1 flex flex-col">
                 <header className="p-4 border-b bg-muted/40 flex justify-between items-center">
                     <h2 className="text-xl font-semibold">Call Transcripts</h2>
