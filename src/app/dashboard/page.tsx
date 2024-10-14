@@ -12,7 +12,7 @@ export default async function Dashboard() {
   const { data: phoneNumbers, error: phoneNumbersError } = await supabase.from('phone_numbers').select('*').returns<PhoneNumber[]>();
   const { data: calls, error: callsError } = await supabase.from('calls').select('*').returns<Call[]>();
   const { data: transcripts, error: transcriptsError } = await supabase.from('transcripts').select('*').returns<Transcript[]>();
-
+  
   if (phoneNumbersError || callsError || transcriptsError) {
     console.error('Error fetching data:', phoneNumbersError || callsError || transcriptsError);
     return <div>Error loading data</div>;
