@@ -4,6 +4,7 @@
 
 body {
   font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--background-color);
 }
 
 @layer utilities {
@@ -15,5 +16,12 @@ body {
 @layer base {
   :root {
     --radius: 0.5rem;
+    --background-color: #ffffff;
+    /* Default to light mode */
+  }
+
+  [data-theme='dark'] {
+    --background-color: #000000;
+    /* Dark mode */
   }
 }

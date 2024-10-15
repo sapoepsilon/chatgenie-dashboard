@@ -1,16 +1,30 @@
 "use server";
 
 import { createClient } from '@/utils/supabase/server';
+import { TablesInsert } from '../../../database.types';
 
-export async function insertBusinessData(businessName: string, weekSchedule: any, teleOperatorInstructions: string, uploadedFiles: string[]) {
+// Use the 'TablesInsert' type for the 'businesses' table to type the business data.
+export async function insertBusinessData(
+  businessName: string, 
+  weekSchedule: TablesInsert<'businesses'>['week_schedule'], 
+  teleOperatorInstructions: string, 
+  uploadedFiles: TablesInsert<'businesses'>['uploaded_files']
+) {
   const supabase = createClient();
 
   try {
-    const user = await supabase.auth.getUser();
-    const { data, error } = await supabase
+    const { data: userData, error: userError } = await supabase.auth.getUser();
+    if (userError || !userData) {
+      throw new Error('User not authenticated');
+    }
+
+    const userId = userData.user?.id; // Extract user ID
+
+    const { data: businessData, error: businessError } = await supabase
       .from('businesses')
       .insert([
         {
+          user_id: userId, // Insert user ID
           business_name: businessName,
           week_schedule: weekSchedule,
           tele_operator_instructions: teleOperatorInstructions,
@@ -18,13 +32,12 @@ export async function insertBusinessData(businessName: string, weekSchedule: any
         }
       ]);
 
-    if (error) {
-      console.error('Error inserting data:', error);
-      return { error };
-    } else {
-      console.log('Data inserted successfully:', data);
-      return { data };
+    if (businessError) {
+      console.error('Error inserting business data:', businessError);
+      return { error: businessError };
     }
+
+    return { data: { businessData } };
   } catch (error) {
     console.error('Unexpected error:', error);
     return { error };

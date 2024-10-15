@@ -34,6 +34,44 @@ export type Database = {
   }
   public: {
     Tables: {
+      businesses: {
+        Row: {
+          business_name: string
+          created_at: string | null
+          id: number
+          tele_operator_instructions: string | null
+          uploaded_files: Json | null
+          user_id: string | null
+          week_schedule: Json
+        }
+        Insert: {
+          business_name: string
+          created_at?: string | null
+          id?: number
+          tele_operator_instructions?: string | null
+          uploaded_files?: Json | null
+          user_id?: string | null
+          week_schedule: Json
+        }
+        Update: {
+          business_name?: string
+          created_at?: string | null
+          id?: number
+          tele_operator_instructions?: string | null
+          uploaded_files?: Json | null
+          user_id?: string | null
+          week_schedule?: Json
+        }
+        Relationships: [
+          {
+            foreignKeyName: "businesses_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       calls: {
         Row: {
           date: string
@@ -109,6 +147,32 @@ export type Database = {
             columns: ["call_id"]
             isOneToOne: false
             referencedRelation: "calls"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      users: {
+        Row: {
+          created_at: string | null
+          email: string
+          id: string
+        }
+        Insert: {
+          created_at?: string | null
+          email: string
+          id: string
+        }
+        Update: {
+          created_at?: string | null
+          email?: string
+          id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "users_id_fkey"
+            columns: ["id"]
+            isOneToOne: true
+            referencedRelation: "users"
             referencedColumns: ["id"]
           },
         ]

@@ -1,18 +1,29 @@
-import { type NextRequest, NextResponse } from 'next/server';
-import { updateSession } from './src/utils/supabase/middleware';
+import { NextResponse } from 'next/server';
+import type { NextRequest } from 'next/server';
 
-export async function middleware(request: NextRequest) {
-  // Redirect to login page if the request is for the root path
-  if (request.nextUrl.pathname === '/') {
+// Mock function to check if the user is authenticated
+// Replace this with your actual authentication logic
+function isAuthenticated(request: NextRequest): boolean {
+  // Example: Check for a specific cookie or token
+  const authToken = request.cookies.get('authToken');
+  return authToken !== undefined;
+}
+
+export function middleware(request: NextRequest) {
+  if (!isAuthenticated(request)) {
+    // Redirect to login if not authenticated
     return NextResponse.redirect(new URL('/login', request.url));
   }
 
-  // Proceed with session update if not redirecting
-  return await updateSession(request);
+  // Allow access to the dashboard if authenticated
+  if (request.nextUrl.pathname.startsWith('/dashboard')) {
+    return NextResponse.next();
+  }
+
+  // Default response
+  return NextResponse.next();
 }
 
 export const config = {
-  matcher: [
-    '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
-  ],
+  matcher: ['/dashboard/:path*', '/login'],
 };
