@@ -1,6 +1,5 @@
 'use client';
-
-import React, { useState, useRef } from 'react';  // Importing React
+import React, { useState, useRef } from 'react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -16,7 +15,7 @@ import {
 } from "@/components/ui/card";
 import { Upload, X, ChevronDown, ChevronUp } from "lucide-react";
 import { useRouter } from 'next/navigation';
-import { createClient } from '@/utils/supabase/client';  // Import createClient function
+import { insertBusinessData } from './insertBusinessData';
 
 const daysOfWeek = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 
@@ -43,7 +42,6 @@ const OnboardingPage = () => {
   const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
-  const supabase = createClient();  // Create Supabase client instance
 
   const handleDayToggle = (day: string) => {
     setWeekSchedule(prev => ({
@@ -66,26 +64,18 @@ const OnboardingPage = () => {
   };
 
   const handleSubmit = async () => {
-    try {
-      const { data, error } = await supabase
-        .from('businesses')
-        .insert([
-          {
-            business_name: businessName,
-            week_schedule: weekSchedule,
-            tele_operator_instructions: teleOperatorInstructions,
-            uploaded_files: uploadedFiles.map(file => file.name)  // Assuming file names are stored
-          }
-        ]);
+    const result = await insertBusinessData(
+      businessName,
+      weekSchedule,
+      teleOperatorInstructions,
+      uploadedFiles.map(file => file.name)
+    );
 
-      if (error) {
-        console.error('Error inserting data:', error);
-      } else {
-        console.log('Data inserted successfully:', data);
-        router.push('/dashboard');
-      }
-    } catch (error) {
-      console.error('Unexpected error:', error);
+    if (result.error) {
+      console.error('Error inserting data:', result.error);
+    } else {
+      console.log('Data inserted successfully:', result.data);
+      router.push('/dashboard');
     }
   };
 

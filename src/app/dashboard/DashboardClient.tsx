@@ -25,7 +25,6 @@ const DashboardClient: React.FC<DashboardClientProps> = ({ phoneNumbers, calls, 
 
     const handleCallSelection = (callId: number) => {
         setSelectedCall(callId);
-        // Filter the transcripts for the selected call ID
         const callTranscripts = transcripts.filter(transcript => transcript.call_id === callId);
         console.log(`Transcripts for call ${callId}:`, callTranscripts);
     };
