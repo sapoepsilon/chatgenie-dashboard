@@ -20,6 +20,8 @@ import { Button } from "./ui/button";
 import { useTheme } from "next-themes";
 import { createClient } from "../utils/supabase/client"; // Import the createClient function
 import { User } from "@supabase/supabase-js";
+import { revalidatePath } from "next/cache";
+import { Form, FormField } from "./ui/form";
 
 export default function NavigationMenuDemo() {
   const { setTheme } = useTheme();
@@ -62,8 +64,22 @@ export default function NavigationMenuDemo() {
           </NavigationMenuList>
         </NavigationMenu>
 
-        {/* Dark Mode Switch */}
         <div className="flex items-center justify-end space-x-2">
+          {/* User Dropdown */}
+          <DropdownMenu>
+            <DropdownMenuTrigger>
+              <Button variant="outline">User</Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="start">
+              <form action="api/auth/signout" method="post">
+                <button className="button block" type="submit">
+                  Sign out
+                </button>
+              </form>
+            </DropdownMenuContent>
+          </DropdownMenu>
+
+          {/* Theme Toggle */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline" size="icon">
@@ -72,6 +88,7 @@ export default function NavigationMenuDemo() {
                 <span className="sr-only">Toggle theme</span>
               </Button>
             </DropdownMenuTrigger>
+
             <DropdownMenuContent align="end">
               <DropdownMenuItem onClick={() => setTheme("light")}>
                 Light
