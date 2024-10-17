@@ -20,8 +20,6 @@ import { Button } from "./ui/button";
 import { useTheme } from "next-themes";
 import { createClient } from "../utils/supabase/client"; // Import the createClient function
 import { User } from "@supabase/supabase-js";
-import { revalidatePath } from "next/cache";
-import { Form, FormField } from "./ui/form";
 
 export default function NavigationMenuDemo() {
   const { setTheme } = useTheme();
