@@ -1,5 +1,5 @@
-'use client';
-import React, { useState, useRef } from 'react';
+"use client";
+import React, { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -14,10 +14,18 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Upload, X, ChevronDown, ChevronUp } from "lucide-react";
-import { useRouter } from 'next/navigation';
-import { insertBusinessData } from './insertBusinessData';
+import { useRouter } from "next/navigation";
+import { insertBusinessData, fetchBusinessData } from "./insertBusinessData";
 
-const daysOfWeek = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+const daysOfWeek = [
+  "Monday",
+  "Tuesday",
+  "Wednesday",
+  "Thursday",
+  "Friday",
+  "Saturday",
+  "Sunday",
+];
 
 type DaySchedule = {
   isOpen: boolean;
@@ -30,30 +38,58 @@ type WeekSchedule = {
 };
 
 const OnboardingPage = () => {
-  const [businessName, setBusinessName] = useState('');
+  const [businessName, setBusinessName] = useState("");
   const [weekSchedule, setWeekSchedule] = useState<WeekSchedule>(
-    daysOfWeek.reduce((acc, day) => ({
-      ...acc,
-      [day]: { isOpen: false, openingTime: '09:00', closingTime: '17:00' }
-    }), {})
+    daysOfWeek.reduce(
+      (acc, day) => ({
+        ...acc,
+        [day]: { isOpen: false, openingTime: "09:00", closingTime: "17:00" },
+      }),
+      {}
+    )
   );
-  const [showTeleOperatorInstructions, setShowTeleOperatorInstructions] = useState(false);
-  const [teleOperatorInstructions, setTeleOperatorInstructions] = useState('');
+  const [showTeleOperatorInstructions, setShowTeleOperatorInstructions] =
+    useState(false);
+  const [teleOperatorInstructions, setTeleOperatorInstructions] = useState("");
   const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
 
+  useEffect(() => {
+    const loadBusinessData = async () => {
+      const result = await fetchBusinessData();
+      if (result.error) {
+        console.error("Error fetching data:", result.error);
+      } else {
+        const data = result.data;
+        setBusinessName(data.business_name);
+        setWeekSchedule(data.week_schedule);
+        setTeleOperatorInstructions(data.tele_operator_instructions);
+        // Assuming uploaded_files is an array of file names
+        setUploadedFiles(
+          data.uploaded_files.map((fileName: string) => new File([], fileName))
+        );
+      }
+    };
+
+    loadBusinessData();
+  }, []);
+
   const handleDayToggle = (day: string) => {
-    setWeekSchedule(prev => ({
+    setWeekSchedule((prev) => ({
       ...prev,
-      [day]: { ...prev[day], isOpen: !prev[day].isOpen }
+      [day]: { ...prev[day], isOpen: !prev[day].isOpen },
     }));
   };
 
-  const handleTimeChange = (day: string, type: 'openingTime' | 'closingTime', value: string) => {
-    setWeekSchedule(prev => ({
+  const handleTimeChange = (
+    day: string,
+    type: "openingTime" | "closingTime",
+    value: string
+  ) => {
+    setWeekSchedule((prev) => ({
       ...prev,
-      [day]: { ...prev[day], [type]: value }
+      [day]: { ...prev[day], [type]: value },
     }));
   };
 
@@ -68,20 +104,20 @@ const OnboardingPage = () => {
       businessName,
       weekSchedule,
       teleOperatorInstructions,
-      uploadedFiles.map(file => file.name)
+      uploadedFiles.map((file) => file.name)
     );
 
     if (result.error) {
-      console.error('Error inserting data:', result.error);
+      console.error("Error inserting data:", result.error);
     } else {
-      console.log('Data inserted successfully:', result.data);
-      router.push('/dashboard');
+      console.log("Data inserted successfully:", result.data);
+      router.push("/dashboard");
     }
   };
 
   return (
-    <div className="container mx-auto max-w-2xl py-10">
-      <Card>
+    <div className="container mx-auto max-w-2xl py-10d">
+      <Card className="bg-background text-foreground">
         <CardHeader>
           <CardTitle>Business Onboarding</CardTitle>
           <CardDescription>Set up your business profile.</CardDescription>
@@ -101,27 +137,33 @@ const OnboardingPage = () => {
 
             <div className="space-y-4">
               <h3 className="text-lg font-medium">Business Hours</h3>
-              {daysOfWeek.map(day => (
+              {daysOfWeek.map((day) => (
                 <div key={day} className="flex items-center justify-between">
                   <Checkbox
                     checked={weekSchedule[day].isOpen}
                     onCheckedChange={() => handleDayToggle(day)}
                     id={day}
-                    className="mr-4"
+                    className="mr-4 dark:border-white dark: hover:border-gray-500"
                   />
-                  <Label htmlFor={day} className="flex-grow">{day}</Label>
+                  <Label htmlFor={day} className="flex-grow">
+                    {day}
+                  </Label>
                   <div className="flex items-center space-x-2">
                     <Input
                       type="time"
                       value={weekSchedule[day].openingTime}
-                      onChange={(e) => handleTimeChange(day, 'openingTime', e.target.value)}
+                      onChange={(e) =>
+                        handleTimeChange(day, "openingTime", e.target.value)
+                      }
                       disabled={!weekSchedule[day].isOpen}
                     />
                     <span>-</span>
                     <Input
                       type="time"
                       value={weekSchedule[day].closingTime}
-                      onChange={(e) => handleTimeChange(day, 'closingTime', e.target.value)}
+                      onChange={(e) =>
+                        handleTimeChange(day, "closingTime", e.target.value)
+                      }
                       disabled={!weekSchedule[day].isOpen}
                     />
                   </div>
@@ -132,7 +174,7 @@ const OnboardingPage = () => {
             <div className="space-y-2">
               <Button
                 variant="ghost"
-                onClick={() => setShowTeleOperatorInstructions(prev => !prev)}
+                onClick={() => setShowTeleOperatorInstructions((prev) => !prev)}
                 className="w-full flex justify-between"
               >
                 Tele-Operator Instructions
@@ -149,7 +191,9 @@ const OnboardingPage = () => {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="fileUpload">Upload Business Documents</Label>
+              <Label className="pr-2" htmlFor="fileUpload">
+                Upload Business Documents
+              </Label>
               <input
                 type="file"
                 id="fileUpload"
@@ -158,19 +202,30 @@ const OnboardingPage = () => {
                 ref={fileInputRef}
                 className="hidden"
               />
-              <Button variant="outline" onClick={() => fileInputRef.current?.click()}>
+              <Button
+                className="bg-background text-foreground px-3"
+                variant="outline"
+                onClick={() => fileInputRef.current?.click()}
+              >
                 <Upload className="mr-2 h-4 w-4" />
                 Upload Files
               </Button>
               {uploadedFiles.length > 0 && (
                 <ul className="mt-2 space-y-1">
                   {uploadedFiles.map((file, index) => (
-                    <li key={index} className="flex items-center justify-between">
+                    <li
+                      key={index}
+                      className="flex items-center justify-between"
+                    >
                       <span>{file.name}</span>
                       <Button
                         variant="ghost"
                         size="icon"
-                        onClick={() => setUploadedFiles(prev => prev.filter((_, i) => i !== index))}
+                        onClick={() =>
+                          setUploadedFiles((prev) =>
+                            prev.filter((_, i) => i !== index)
+                          )
+                        }
                       >
                         <X className="h-4 w-4" />
                       </Button>
@@ -183,7 +238,9 @@ const OnboardingPage = () => {
         </CardContent>
 
         <CardFooter className="flex justify-end">
-          <Button onClick={handleSubmit} type="submit">Complete Onboarding</Button>
+          <Button onClick={handleSubmit} type="submit">
+            Complete Onboarding
+          </Button>
         </CardFooter>
       </Card>
     </div>

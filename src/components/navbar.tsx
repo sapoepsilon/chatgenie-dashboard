@@ -18,13 +18,14 @@ import {
 } from "./ui/dropdown-menu";
 import { Button } from "./ui/button";
 import { useTheme } from "next-themes";
-import { createClient } from "../utils/supabase/client"; // Import the createClient function
+import { createClient } from "../utils/supabase/client";
 import { User } from "@supabase/supabase-js";
+import { useRouter } from "next/navigation"; // Updated import
 
 export default function NavigationMenuDemo() {
   const { setTheme } = useTheme();
   const [user, setUser] = React.useState<User | null>(null);
-
+  const router = useRouter();
   React.useEffect(() => {
     const supabase = createClient(); // Create a Supabase client instance
 
@@ -66,28 +67,43 @@ export default function NavigationMenuDemo() {
           {/* User Dropdown */}
           <DropdownMenu>
             <DropdownMenuTrigger>
-              <Button variant="outline">User</Button>
+              <Button
+                className="bg-background text-foreground"
+                variant="outline"
+              >
+                Profile
+              </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="start">
+            <DropdownMenuContent
+              className="bg-background text-foreground"
+              align="start"
+            >
               <form action="api/auth/signout" method="post">
-                <button className="button block" type="submit">
+                <Button variant="ghost" type="submit">
                   Sign out
-                </button>
+                </Button>
               </form>
+              {/* Create a button to navigate to the /settings routs */}
+              <Button variant="ghost" onClick={() => router.push("/settings")}>
+                Settings
+              </Button>
             </DropdownMenuContent>
           </DropdownMenu>
 
           {/* Theme Toggle */}
           <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="outline" size="icon">
-                <Sun className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+            <DropdownMenuTrigger asChild className="bg-background">
+              <Button className="bg-background" variant="outline" size="icon">
+                <Sun className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all bg-background dark:-rotate-90 dark:scale-0" />
                 <Moon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
                 <span className="sr-only">Toggle theme</span>
               </Button>
             </DropdownMenuTrigger>
 
-            <DropdownMenuContent align="end">
+            <DropdownMenuContent
+              align="end"
+              className="bg-background text-foreground"
+            >
               <DropdownMenuItem onClick={() => setTheme("light")}>
                 Light
               </DropdownMenuItem>
