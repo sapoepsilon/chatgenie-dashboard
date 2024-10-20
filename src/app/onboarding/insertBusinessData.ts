@@ -21,12 +21,11 @@ export async function insertBusinessData(
     const userId = userData.user?.id; // Extract user ID
 
     // Check if the business already exists
-    const { data: existingBusiness, error: existingBusinessError } =
-      await supabase
-        .from("businesses")
-        .select("*")
-        .eq("user_id", userId)
-        .single();
+    const { data: existingBusiness } = await supabase
+      .from("businesses")
+      .select("*")
+      .eq("user_id", userId)
+      .single();
     // TODO: Right now only one business per user is allowed. Do we want to allow multiple businesses per user?
 
     if (existingBusiness) {
