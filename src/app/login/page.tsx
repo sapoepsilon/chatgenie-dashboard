@@ -25,7 +25,7 @@ export default function LoginPage() {
           <Tabs defaultValue="login">
             <TabsList className="grid w-full grid-cols-2 bg-background">
               <TabsTrigger value="login">Login</TabsTrigger>
-              <TabsTrigger value="signup">Sing up</TabsTrigger>
+              <TabsTrigger value="signup">Sign up</TabsTrigger>
             </TabsList>{" "}
             {/* Login Form */}
             <TabsContent value="login">
