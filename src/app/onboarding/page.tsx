@@ -184,7 +184,7 @@ const OnboardingPage = () => {
                   checked={weekSchedule[day].isOpen}
                   onCheckedChange={() => handleDayToggle(day)}
                   id={day}
-                  className="mr-4 dark:border-white dark: hover:border-gray-500"
+                  className="mr-4 border-gray-200 hover:border-gray-500"
                 />
                 <Label htmlFor={day} className="flex-grow">
                   {day}

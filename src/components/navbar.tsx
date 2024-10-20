@@ -78,15 +78,20 @@ export default function NavigationMenuDemo() {
               className="bg-background text-foreground"
               align="start"
             >
+              <Button
+                variant="ghost"
+                className="w-full"
+                onClick={() => router.push("/settings")}
+              >
+                Settings
+              </Button>
+
               <form action="api/auth/signout" method="post">
-                <Button variant="ghost" type="submit">
+                <Button variant="destructive" className="w-full" type="submit">
                   Sign out
                 </Button>
               </form>
               {/* Create a button to navigate to the /settings routs */}
-              <Button variant="ghost" onClick={() => router.push("/settings")}>
-                Settings
-              </Button>
             </DropdownMenuContent>
           </DropdownMenu>
 

@@ -38,8 +38,6 @@ export async function updateSession(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser();
 
-  console.log("User: ", user);
-
   if (
     !user &&
     !request.nextUrl.pathname.startsWith("/login") &&
@@ -52,8 +50,6 @@ export async function updateSession(request: NextRequest) {
   }
 
   if (user) {
-    // if user is authenticated and trying to access the login page or the root page, redirect to dashboar
-    console.log("User is authenticated");
     if (
       request.nextUrl.pathname.startsWith("/login") ||
       request.nextUrl.pathname === "/"
