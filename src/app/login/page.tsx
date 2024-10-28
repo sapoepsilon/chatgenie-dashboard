@@ -1,4 +1,4 @@
-import { login, signup } from "./actions";
+import { login, signup, forgotPassword } from "./actions";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -55,6 +55,14 @@ export default function LoginPage() {
                   className=" text-white p-2 rounded hover:bg-blue-600"
                 >
                   Log in
+                </Button>
+              </form>
+              <form className="flex flex-col space-y-4" action={forgotPassword}>
+                <Button
+                  type="submit"
+                  className="text-white hover:underline mt-2"
+                >
+                  Forgot Password?
                 </Button>
               </form>
             </TabsContent>
