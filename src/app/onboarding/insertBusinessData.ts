@@ -126,9 +126,7 @@ export async function fetchBusinessData() {
 }
 
 // New function to upload phone number
-export async function uploadPhoneNumber(
-  phoneNumber: string,
-) {
+export async function uploadPhoneNumber(phoneNumber: string) {
   const supabase = createClient();
 
   try {
@@ -150,12 +148,14 @@ export async function uploadPhoneNumber(
       return { error: businessError };
     }
 
-    const { error: phoneError } = await supabase.from("business_phone_numbers").insert([
-      {
-        phone_number: phoneNumber,
-        business_id: businessData.id,
-      },
-    ]);
+    const { error: phoneError } = await supabase
+      .from("business_phone_numbers")
+      .insert([
+        {
+          phone_number: phoneNumber,
+          business_id: businessData.id,
+        },
+      ]);
 
     if (phoneError) {
       console.error("Error uploading phone number:", phoneError);
@@ -195,8 +195,8 @@ export async function fetchBusinessPhoneNumber() {
 
     // Fetch the phone number using the business ID
     const { data: phoneNumberData, error: phoneNumberError } = await supabase
-      .from("phone_numbers")
-      .select("number")
+      .from("business_phone_numbers")
+      .select("phone_number")
       .eq("business_id", businessData.id)
       .single();
 
@@ -205,7 +205,7 @@ export async function fetchBusinessPhoneNumber() {
       return { error: phoneNumberError };
     }
 
-    return { data: phoneNumberData.number };
+    return { data: phoneNumberData.phone_number };
   } catch (error) {
     console.error("Unexpected error:", error);
     return { error };
