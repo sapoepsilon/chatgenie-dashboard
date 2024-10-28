@@ -146,7 +146,6 @@ const OnboardingPage = () => {
     // Upload the phone number immediately after generating it
     const uploadResult = await uploadPhoneNumber(
       randomPhoneNumber,
-      businessName
     );
     if (uploadResult.error) {
       console.error("Error uploading phone number:", uploadResult.error);
@@ -170,7 +169,7 @@ const OnboardingPage = () => {
             <Label htmlFor="businessName">Business Name</Label>
             <Input
               id="businessName"
-              placeholder="e.g., CallTrack Pro"
+              placeholder="e.g., Acme, inc."
               value={businessName}
               onChange={(e) => setBusinessName(e.target.value)}
             />

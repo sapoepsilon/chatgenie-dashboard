@@ -34,6 +34,35 @@ export type Database = {
   }
   public: {
     Tables: {
+      business_phone_numbers: {
+        Row: {
+          business_id: number | null
+          created_at: string
+          id: number
+          phone_number: string | null
+        }
+        Insert: {
+          business_id?: number | null
+          created_at?: string
+          id?: number
+          phone_number?: string | null
+        }
+        Update: {
+          business_id?: number | null
+          created_at?: string
+          id?: number
+          phone_number?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "business_phone_numbers_business_id_fkey"
+            columns: ["business_id"]
+            isOneToOne: false
+            referencedRelation: "businesses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       businesses: {
         Row: {
           business_name: string
@@ -62,15 +91,7 @@ export type Database = {
           user_id?: string | null
           week_schedule?: Json
         }
-        Relationships: [
-          {
-            foreignKeyName: "businesses_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       calls: {
         Row: {
@@ -106,21 +127,32 @@ export type Database = {
       }
       phone_numbers: {
         Row: {
+          business_id: number | null
           id: number
           name: string
           number: string
         }
         Insert: {
+          business_id?: number | null
           id?: never
           name: string
           number: string
         }
         Update: {
+          business_id?: number | null
           id?: never
           name?: string
           number?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "phone_numbers_business_id_fkey"
+            columns: ["business_id"]
+            isOneToOne: false
+            referencedRelation: "businesses"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       transcripts: {
         Row: {
@@ -167,15 +199,7 @@ export type Database = {
           email?: string
           id?: string
         }
-        Relationships: [
-          {
-            foreignKeyName: "users_id_fkey"
-            columns: ["id"]
-            isOneToOne: true
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
     }
     Views: {
@@ -273,5 +297,20 @@ export type Enums<
   ? Database[PublicEnumNameOrOptions["schema"]]["Enums"][EnumName]
   : PublicEnumNameOrOptions extends keyof PublicSchema["Enums"]
     ? PublicSchema["Enums"][PublicEnumNameOrOptions]
+    : never
+
+export type CompositeTypes<
+  PublicCompositeTypeNameOrOptions extends
+    | keyof PublicSchema["CompositeTypes"]
+    | { schema: keyof Database },
+  CompositeTypeName extends PublicCompositeTypeNameOrOptions extends {
+    schema: keyof Database
+  }
+    ? keyof Database[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"]
+    : never = never,
+> = PublicCompositeTypeNameOrOptions extends { schema: keyof Database }
+  ? Database[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"][CompositeTypeName]
+  : PublicCompositeTypeNameOrOptions extends keyof PublicSchema["CompositeTypes"]
+    ? PublicSchema["CompositeTypes"][PublicCompositeTypeNameOrOptions]
     : never
 

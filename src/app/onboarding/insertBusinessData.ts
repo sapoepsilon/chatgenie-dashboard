@@ -128,7 +128,6 @@ export async function fetchBusinessData() {
 // New function to upload phone number
 export async function uploadPhoneNumber(
   phoneNumber: string,
-  businessName: string
 ) {
   const supabase = createClient();
 
@@ -151,10 +150,9 @@ export async function uploadPhoneNumber(
       return { error: businessError };
     }
 
-    const { error: phoneError } = await supabase.from("phone_numbers").insert([
+    const { error: phoneError } = await supabase.from("business_phone_numbers").insert([
       {
-        number: phoneNumber,
-        name: businessName,
+        phone_number: phoneNumber,
         business_id: businessData.id,
       },
     ]);
