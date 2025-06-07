@@ -1,5 +1,6 @@
 // app/admin/page.tsx
 import TwilioPhoneNumbers from "@/components/twilio-phone-numbers";
+import OpenAIRealtime from "@/components/openai-realtime";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export default function AdminPage() {
@@ -10,11 +11,16 @@ export default function AdminPage() {
       <Tabs defaultValue="twilio" className="w-full">
         <TabsList>
           <TabsTrigger value="twilio">Twilio</TabsTrigger>
+          <TabsTrigger value="openai">OpenAI Realtime</TabsTrigger>
           <TabsTrigger value="settings">Settings</TabsTrigger>
         </TabsList>
 
         <TabsContent value="twilio">
           <TwilioPhoneNumbers />
+        </TabsContent>
+
+        <TabsContent value="openai">
+          <OpenAIRealtime />
         </TabsContent>
 
         <TabsContent value="settings">
